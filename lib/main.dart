@@ -1,23 +1,32 @@
+import 'package:artistic_swimming_app/dao/event_dao.dart';
+import 'package:artistic_swimming_app/stc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider(create: (context) => EventDao()),
+      ],
+      child: const ArtisticSwimmingApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ArtisticSwimmingApp extends StatelessWidget {
+  const ArtisticSwimmingApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     _landscapeModeOnly();
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Synchro Timer',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SynchroHomePage(title: 'Synchro Timer'),
+      home: const SynchroHomePage(),
     );
   }
 
@@ -30,9 +39,9 @@ class MyApp extends StatelessWidget {
 }
 
 class SynchroHomePage extends StatefulWidget {
-  const SynchroHomePage({super.key, required this.title});
+  const SynchroHomePage({super.key});
 
-  final String title;
+  String get title => "Synchro Timer";
 
   @override
   State<SynchroHomePage> createState() => _SynchroHomePageState();
@@ -41,12 +50,61 @@ class SynchroHomePage extends StatefulWidget {
 class _SynchroHomePageState extends State<SynchroHomePage> {
   @override
   Widget build(BuildContext context) {
-    final ButtonStyle style = ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
-
+    final ButtonStyle style = ElevatedButton.styleFrom(
+      textStyle: const TextStyle(fontSize: 20),
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-      )
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(14.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Flexible(
+                flex: 1,
+                fit: FlexFit.tight,
+                child: ElevatedButton(
+                  style: style,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const StcPage()),
+                    );
+                  },
+                  child: const Text(textAlign: TextAlign.center, 'Synchronization Technical Controller'),
+                ),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              Flexible(
+                flex: 1,
+                fit: FlexFit.tight,
+                child: ElevatedButton(
+                  style: style,
+                  onPressed: () {},
+                  child: const Text(textAlign: TextAlign.center, 'Difficulty Technical Controller'),
+                ),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              Flexible(
+                flex: 1,
+                fit: FlexFit.tight,
+                child: ElevatedButton(
+                  style: style,
+                  onPressed: () {},
+                  child: const Text(textAlign: TextAlign.center, 'Dashboard'),
+                ),
+              ), //Flex
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
