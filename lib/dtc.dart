@@ -89,6 +89,7 @@ class DtcPageState extends State<DtcPage> {
       } else {
         _stopwatch.stop();
         _resetMovement();
+        _setUnderWater(false);
       }
     });
   }
