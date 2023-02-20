@@ -22,11 +22,28 @@ class EventEntity {
   });
 
   EventEntity.fromMap(Map<String, dynamic> map)
-      : type = EventType.values.firstWhere((it) => it.toString() == map[fieldEvent] as String),
+      : type = EventType.values.firstWhere((it) => it.name == map[fieldEvent] as String),
         timestamp = map[fieldTimestamp] as int;
 
   Map<String, dynamic> toMap() => {
         fieldTimestamp: timestamp,
         fieldEvent: type.name,
       };
+
+  int compress(int diff) {
+    final paddedIndex = type.index.toString().padLeft(2, '0');
+    return int.parse("$paddedIndex$diff");
+  }
+}
+
+class EventExportData {
+  final int min;
+  final List<int> diffs;
+
+  const EventExportData({
+    required this.min,
+    required this.diffs,
+  });
+
+  Map<String, dynamic> toMap() => {"m": min, "d": diffs};
 }

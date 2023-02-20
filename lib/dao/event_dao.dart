@@ -14,10 +14,7 @@ class EventDao extends BaseDao {
 
   Future<void> insert(EventEntity entity) async {
     final db = await getDatabase();
-    final batch = db.batch();
-
-    batch.insert(BaseDao.eventTableName, entity.toMap());
-    await batch.commit();
+    await db.insert(BaseDao.eventTableName, entity.toMap());
   }
 
   Future<void> deleteAll() async {

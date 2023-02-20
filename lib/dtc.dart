@@ -11,14 +11,6 @@ class DtcPage extends StatefulWidget {
 
   String get title => "Difficulty Technical Controller";
 
-  String formatTime(int time) {
-    if (time <= 9) {
-      return "0$time";
-    } else {
-      return time.toString();
-    }
-  }
-
   @override
   State<DtcPage> createState() => DtcPageState();
 }
@@ -48,8 +40,8 @@ class DtcPageState extends State<DtcPage> {
 
   _timerCallback(Timer timer) {
     var seconds = _stopwatch.elapsed.inSeconds;
-    var minutes = widget.formatTime(seconds ~/ 60);
-    var secs = widget.formatTime(seconds % 60);
+    var minutes = (seconds ~/ 60).toString().padLeft(2, '0');
+    var secs = (seconds % 60).toString().padLeft(2, '0');
     setState(() {
       _timerText = "$minutes:$secs";
     });

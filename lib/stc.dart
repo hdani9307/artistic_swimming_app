@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:artistic_swimming_app/export.dart';
 import 'package:artistic_swimming_app/model/event.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +54,16 @@ class StcPageState extends State<StcPage> {
             icon: const Icon(Icons.qr_code),
             tooltip: 'Export',
             onPressed: () {
-              // handle the press
+              _exportData(
+                (json) => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ExportPage(qrData: json),
+                    ),
+                  )
+                },
+              );
             },
           ),
         ],
@@ -105,11 +118,34 @@ class StcPageState extends State<StcPage> {
                       : null,
                   child: const Text(textAlign: TextAlign.center, 'Obvious'),
                 ),
-              ), //Flex
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // TODO Move compress logic to repository layer
+  void _exportData(void Function(String data) onSuccess) async {
+    final results = await Provider.of<EventDao>(context, listen: false).selectAll();
+    results.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    var previous = results[0].timestamp;
+    final min = previous;
+
+    final compressedDiffs = <int>[];
+    for (var result in results) {
+      compressedDiffs.add(result.compress(result.timestamp - previous));
+      previous = result.timestamp;
+    }
+    final exportable = EventExportData(min: min, diffs: compressedDiffs);
+    final json = jsonEncode(exportable.toMap());
+    final enCodedJson = utf8.encode(json);
+    final gZipJson = gzip.encode(enCodedJson);
+    final base64Json = base64.encode(gZipJson);
+
+    // TODO Handle if cannot be rendered
+    // 1932
+    onSuccess(base64Json);
   }
 }
