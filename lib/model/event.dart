@@ -26,7 +26,7 @@ class EventEntity {
         timestamp = map[fieldTimestamp] as int;
 
   Map<String, dynamic> toMap() => {
-        fieldEvent: type.name,
         fieldTimestamp: timestamp,
+        fieldEvent: type.name,
       };
 }

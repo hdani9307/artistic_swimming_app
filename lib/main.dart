@@ -1,4 +1,5 @@
 import 'package:artistic_swimming_app/dao/event_dao.dart';
+import 'package:artistic_swimming_app/dtc.dart';
 import 'package:artistic_swimming_app/stc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -85,7 +86,12 @@ class _SynchroHomePageState extends State<SynchroHomePage> {
                 fit: FlexFit.tight,
                 child: ElevatedButton(
                   style: style,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const DtcPage()),
+                    );
+                  },
                   child: const Text(textAlign: TextAlign.center, 'Difficulty Technical Controller'),
                 ),
               ),
