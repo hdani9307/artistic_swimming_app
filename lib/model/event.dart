@@ -35,15 +35,3 @@ class EventEntity {
     return int.parse("$paddedIndex$diff");
   }
 }
-
-class EventExportData {
-  final int min;
-  final List<int> diffs;
-
-  const EventExportData({
-    required this.min,
-    required this.diffs,
-  });
-
-  Map<String, dynamic> toMap() => {"m": min, "d": diffs};
-}

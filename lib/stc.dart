@@ -1,8 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
+import 'dart:math';
 
 import 'package:artistic_swimming_app/export.dart';
 import 'package:artistic_swimming_app/model/event.dart';
+import 'package:artistic_swimming_app/model/export.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -55,11 +55,14 @@ class StcPageState extends State<StcPage> {
             tooltip: 'Export',
             onPressed: () {
               _exportData(
-                (json) => {
+                (meta, data) => {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ExportPage(qrData: json),
+                      builder: (context) => ExportPage(
+                        meta: meta,
+                        data: data,
+                      ),
                     ),
                   )
                 },
@@ -126,26 +129,27 @@ class StcPageState extends State<StcPage> {
     );
   }
 
-  // TODO Move compress logic to repository layer
-  void _exportData(void Function(String data) onSuccess) async {
+  // TODO Move export logic to repository layer
+  void _exportData(void Function(ExportMeta meta, List<ExportData> data) onSuccess) async {
     final results = await Provider.of<EventDao>(context, listen: false).selectAll();
     results.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-    var previous = results[0].timestamp;
-    final min = previous;
+    final startTimestamp = results[0].timestamp;
 
     final compressedDiffs = <int>[];
     for (var result in results) {
-      compressedDiffs.add(result.compress(result.timestamp - previous));
-      previous = result.timestamp;
+      compressedDiffs.add(result.compress(result.timestamp - startTimestamp));
     }
-    final exportable = EventExportData(min: min, diffs: compressedDiffs);
-    final json = jsonEncode(exportable.toMap());
-    final enCodedJson = utf8.encode(json);
-    final gZipJson = gzip.encode(enCodedJson);
-    final base64Json = base64.encode(gZipJson);
+    var i = 0;
+    const step = 300;
 
-    // TODO Handle if cannot be rendered
-    // 1932
-    onSuccess(base64Json);
+    final exportData = <ExportData>[];
+    for (var subListStart = 0; subListStart <= compressedDiffs.length; subListStart += step) {
+      final end = min(subListStart + step, compressedDiffs.length - 1);
+      final subList = compressedDiffs.sublist(subListStart, end);
+      exportData.add(ExportData(index: i++, diffs: subList));
+    }
+    final meta = ExportMeta(numberOfFragments: i, min: startTimestamp);
+
+    onSuccess(meta, exportData);
   }
 }

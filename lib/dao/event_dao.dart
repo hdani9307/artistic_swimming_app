@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:artistic_swimming_app/model/event.dart';
 import 'package:sqflite/sqflite.dart';
 
