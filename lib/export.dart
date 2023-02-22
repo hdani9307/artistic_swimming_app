@@ -13,29 +13,61 @@ class ExportPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var controller = PageController(initialPage: 0);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Export"),
       ),
       body: SafeArea(
-        child: Center(
-          child: PageView(
-            controller: PageController(
-                initialPage: 0
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new_outlined),
+              onPressed: () {
+                controller.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+              },
             ),
-            children: _createQrImages(),
-          ),
+            Flexible(
+              child: Center(
+                child: PageView(
+                  controller: controller,
+                  children: _createQrImages(),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.arrow_forward_ios_outlined),
+              onPressed: () {
+                controller.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 
   List<Widget> _createQrImages() {
+    const padding = EdgeInsets.all(30);
     final widgets = [
-      QrImage(data: _encodeData(meta.toMap())),
+      Center(
+        child: QrImage(
+          padding: padding,
+          data: _encodeData(meta.toMap()),
+        ),
+      ),
     ];
     for (var value in data) {
-      widgets.add(QrImage(data: _encodeData(value.toMap())));
+      widgets.add(
+        Center(
+          child: QrImage(
+            padding: padding,
+            data: _encodeData(value.toMap()),
+          ),
+        ),
+      );
     }
 
     return widgets;
