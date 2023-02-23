@@ -110,8 +110,8 @@ class DtcPageState extends State<DtcPage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.qr_code),
-            tooltip: 'Export',
+            icon: const Icon(Icons.dashboard),
+            tooltip: 'Dashboard',
             onPressed: () {
               // handle the press
             },
