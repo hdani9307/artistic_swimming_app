@@ -1,6 +1,8 @@
-import "dart:ffi";
 
+import "package:artistic_swimming_app/dao/user_dao.dart";
+import "package:artistic_swimming_app/model/user.dart";
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 
 import "home.dart";
 
@@ -14,7 +16,7 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> {
   final _controller = TextEditingController();
 
-  bool? _valid = null;
+  bool? _valid;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class LoginPageState extends State<LoginPage> {
                   border: const OutlineInputBorder(),
                   labelText: "Your name",
                   hintText: "Please enter your name",
-                  errorText: _valid == null || _valid! ? null : "Value can't be empty" ,
+                  errorText: _valid == null || _valid! ? null : "Value can't be empty",
                 ),
               ),
             ),
@@ -54,7 +56,11 @@ class LoginPageState extends State<LoginPage> {
                       _valid = false;
                     });
                   } else {
-                    // TODO Save username
+                    Provider.of<UserDao>(context, listen: false).insertOne(
+                      UserEntity(
+                        name: _controller.text,
+                      ),
+                    );
                     Navigator.push(
                       context,
                       MaterialPageRoute(

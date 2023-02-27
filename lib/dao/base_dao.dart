@@ -1,13 +1,11 @@
+import 'package:artistic_swimming_app/dao/event_dao.dart';
+import 'package:artistic_swimming_app/dao/user_dao.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../model/event.dart';
-
-class BaseDao {
+abstract class BaseDao {
   static const _databaseName = 'artistic_swimming.db';
-
-  static const eventTableName = 'event';
 
   @protected
   Future<Database> getDatabase() async {
@@ -15,21 +13,11 @@ class BaseDao {
       join(await getDatabasesPath(), _databaseName),
       onCreate: (db, version) async {
         final batch = db.batch();
-        _createEventTable(batch);
+        batch.execute(EventDao.getCreateTableScript());
+        batch.execute(UserDao.getCreateTableScript());
         await batch.commit();
       },
       version: 1,
-    );
-  }
-
-  void _createEventTable(Batch batch) {
-    batch.execute(
-      '''
-      CREATE TABLE $eventTableName(
-      ${EventEntity.fieldTimestamp} INTEGER PRIMARY KEY NOT NULL,
-      ${EventEntity.fieldEvent} TEXT  NOT NULL
-      );
-      ''',
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:artistic_swimming_app/dao/event_dao.dart';
+import 'package:artistic_swimming_app/dao/user_dao.dart';
 import 'package:artistic_swimming_app/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ void main() {
     MultiProvider(
       providers: [
         Provider(create: (context) => EventDao()),
+        Provider(create: (context) => UserDao()),
       ],
       child: const ArtisticSwimmingApp(),
     ),

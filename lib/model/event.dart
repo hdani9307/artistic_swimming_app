@@ -10,8 +10,8 @@ enum EventType {
 }
 
 class EventEntity {
-  static var fieldEvent = 'eventType';
-  static var fieldTimestamp = 'timestamp';
+  static const fieldEvent = 'eventType';
+  static const fieldTimestamp = 'timestamp';
 
   final EventType type;
   final int timestamp;
