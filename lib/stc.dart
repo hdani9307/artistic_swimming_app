@@ -20,11 +20,15 @@ class StcPage extends StatefulWidget {
 
 class StcPageState extends State<StcPage> {
   bool _started = false;
+  int _routineCounter = 0;
 
   _toggleStarted() {
     _saveEvent(_started ? EventType.start : EventType.stop);
     setState(() {
       _started = !_started;
+      if (_started) {
+        _routineCounter++;
+      }
     });
   }
 
@@ -37,12 +41,25 @@ class StcPageState extends State<StcPage> {
     );
   }
 
+  Future<void> _getRoutines() async {
+    var routines = await Provider.of<EventDao>(context, listen: false).countRounds();
+    setState(() {
+      _routineCounter = routines;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getRoutines();
+  }
+
   @override
   Widget build(BuildContext context) {
     const font = TextStyle(fontSize: 20);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("${widget.title} - Routine: $_routineCounter"),
         actions: [
           IconButton(
             icon: _started ? const Icon(Icons.stop) : const Icon(Icons.play_arrow),
