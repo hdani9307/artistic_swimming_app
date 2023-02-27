@@ -15,9 +15,9 @@ class EventDao extends BaseDao {
       ''';
   }
 
-  Future<List<EventEntity>> selectAll() async {
+  Future<List<EventEntity>> selectAllSortByTimestamp() async {
     final db = await getDatabase();
-    final List<Map<String, dynamic>> maps = await db.query(_eventTableName);
+    final List<Map<String, dynamic>> maps = await db.query(_eventTableName, orderBy: EventEntity.fieldTimestamp);
     return List.generate(maps.length, (i) => EventEntity.fromMap(maps[i]));
   }
 
@@ -33,7 +33,7 @@ class EventDao extends BaseDao {
 
   Future<int> countRounds() async {
     final db = await getDatabase();
-    var list = await db.rawQuery("SELECT COUNT(*) FROM ${_eventTableName}");
+    var list = await db.rawQuery("SELECT COUNT(*) FROM $_eventTableName");
     return Sqflite.firstIntValue(list)!;
   }
 }
