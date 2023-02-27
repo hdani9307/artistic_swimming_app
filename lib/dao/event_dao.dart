@@ -33,7 +33,7 @@ class EventDao extends BaseDao {
 
   Future<int> countRounds() async {
     final db = await getDatabase();
-    var list = await db.rawQuery("SELECT COUNT(*) FROM $_eventTableName");
+    var list = await db.rawQuery("SELECT COUNT(*) FROM $_eventTableName WHERE ${EventEntity.fieldEvent} = 'start'");
     return Sqflite.firstIntValue(list)!;
   }
 }
