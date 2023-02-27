@@ -1,3 +1,4 @@
+import 'package:artistic_swimming_app/scan.dart';
 import 'package:artistic_swimming_app/stc.dart';
 import 'package:flutter/material.dart';
 
@@ -67,7 +68,12 @@ class _SynchroHomePageState extends State<SynchroHomePage> {
                 fit: FlexFit.tight,
                 child: ElevatedButton(
                   style: style,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ScanPage()),
+                    );
+                  },
                   child: const Text(textAlign: TextAlign.center, 'Dashboard'),
                 ),
               ), //Flex
