@@ -22,13 +22,15 @@ class DtcPageState extends State<DtcPage> {
   int _movements = 0;
   bool _underWater = false;
   String _timerText = "00:00";
+  int _routineCounter = 0;
 
   Timer? _timer;
 
   @override
   void initState() {
-    _timer = Timer.periodic(const Duration(milliseconds: 1000), _timerCallback);
     super.initState();
+    _timer = Timer.periodic(const Duration(milliseconds: 1000), _timerCallback);
+    _getRoutines();
   }
 
   @override
@@ -36,6 +38,13 @@ class DtcPageState extends State<DtcPage> {
     _timer?.cancel();
     _timer = null;
     super.dispose();
+  }
+
+  Future<void> _getRoutines() async {
+    var routines = await Provider.of<EventDao>(context, listen: false).countRounds();
+    setState(() {
+      _routineCounter = routines;
+    });
   }
 
   _timerCallback(Timer timer) {
@@ -78,6 +87,7 @@ class DtcPageState extends State<DtcPage> {
       if (_started) {
         _stopwatch.reset();
         _stopwatch.start();
+        _routineCounter++;
       } else {
         _stopwatch.stop();
         _resetMovement();
@@ -100,7 +110,7 @@ class DtcPageState extends State<DtcPage> {
     const font = TextStyle(fontSize: 20);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("${widget.title} - Routine: $_routineCounter"),
         actions: [
           IconButton(
             icon: _started ? const Icon(Icons.stop) : const Icon(Icons.play_arrow),
