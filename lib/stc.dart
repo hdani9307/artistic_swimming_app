@@ -2,8 +2,7 @@ import 'dart:math';
 
 import 'package:artistic_swimming_app/export.dart';
 import 'package:artistic_swimming_app/model/event.dart';
-import 'package:artistic_swimming_app/model/export.dart';
-import 'package:artistic_swimming_app/repository/event_repository.dart';
+import 'package:artistic_swimming_app/repository/export_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,6 +36,7 @@ class StcPageState extends State<StcPage> {
       EventEntity(
         type: eventType,
         timestamp: DateTime.now().millisecondsSinceEpoch,
+        controllerType: ControllerType.stc
       ),
     );
   }

@@ -10,7 +10,8 @@ class EventDao extends BaseDao {
     return '''
       CREATE TABLE $_eventTableName(
       ${EventEntity.fieldTimestamp} INTEGER PRIMARY KEY NOT NULL,
-      ${EventEntity.fieldEvent} TEXT  NOT NULL
+      ${EventEntity.fieldEvent} TEXT  NOT NULL,
+      ${EventEntity.fieldControllerType} TEXT  NOT NULL
       );
       ''';
   }
@@ -18,6 +19,17 @@ class EventDao extends BaseDao {
   Future<List<EventEntity>> selectAllSortByTimestamp() async {
     final db = await getDatabase();
     final List<Map<String, dynamic>> maps = await db.query(_eventTableName, orderBy: EventEntity.fieldTimestamp);
+    return List.generate(maps.length, (i) => EventEntity.fromMap(maps[i]));
+  }
+
+  Future<List<EventEntity>> selectAllByControllerTypeSortByTimestamp(ControllerType controllerType) async {
+    final db = await getDatabase();
+    final List<Map<String, dynamic>> maps = await db.query(
+      _eventTableName,
+      where: '${EventEntity.fieldControllerType}=?',
+      whereArgs: [controllerType.name],
+      orderBy: EventEntity.fieldTimestamp,
+    );
     return List.generate(maps.length, (i) => EventEntity.fromMap(maps[i]));
   }
 

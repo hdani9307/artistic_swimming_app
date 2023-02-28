@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'dao/event_dao.dart';
+import 'dtc_dashboard.dart';
 import 'model/event.dart';
 
 class DtcPage extends StatefulWidget {
@@ -101,6 +102,7 @@ class DtcPageState extends State<DtcPage> {
       EventEntity(
         type: eventType,
         timestamp: DateTime.now().millisecondsSinceEpoch,
+        controllerType: ControllerType.dtc
       ),
     );
   }
@@ -123,7 +125,10 @@ class DtcPageState extends State<DtcPage> {
             icon: const Icon(Icons.dashboard),
             tooltip: 'Dashboard',
             onPressed: () {
-              // handle the press
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DtcDashboardPage()),
+              );
             },
           ),
         ],
