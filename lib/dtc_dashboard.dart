@@ -48,8 +48,10 @@ class DtcDashboardPageState extends State<DtcDashboardPage> {
               child: const Text('Confirm'),
               onPressed: () {
                 Provider.of<EventDao>(context, listen: false).deleteAll();
-                _summary.clear();
                 Navigator.of(context).pop();
+                setState(() {
+                  _summary.clear();
+                });
               },
             ),
           ],
