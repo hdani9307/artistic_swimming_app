@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:artistic_swimming_app/export.dart';
 import 'package:artistic_swimming_app/model/event.dart';
 import 'package:artistic_swimming_app/repository/export_repository.dart';
@@ -20,24 +18,39 @@ class StcPage extends StatefulWidget {
 class StcPageState extends State<StcPage> {
   bool _started = false;
   int _routineCounter = 0;
+  int _small = 0;
+  int _major = 0;
+  int _obvious = 0;
 
   _toggleStarted() {
     _saveEvent(_started ? EventType.start : EventType.stop);
     setState(() {
       _started = !_started;
       if (_started) {
+        _small = 0;
+        _major = 0;
+        _obvious = 0;
         _routineCounter++;
       }
     });
   }
 
   _saveEvent(EventType eventType) {
+    if (eventType == EventType.majorMistake) {
+      setState(() {
+        _major++;
+      });
+    } else if (eventType == EventType.obviousMistake) {
+      setState(() {
+        _obvious++;
+      });
+    } else if (eventType == EventType.smallMistake) {
+      setState(() {
+        _small++;
+      });
+    }
     Provider.of<EventDao>(context, listen: false).insert(
-      EventEntity(
-        type: eventType,
-        timestamp: DateTime.now().millisecondsSinceEpoch,
-        controllerType: ControllerType.stc
-      ),
+      EventEntity(type: eventType, timestamp: DateTime.now().millisecondsSinceEpoch, controllerType: ControllerType.stc),
     );
   }
 
@@ -103,7 +116,7 @@ class StcPageState extends State<StcPage> {
                           _saveEvent(EventType.smallMistake);
                         }
                       : null,
-                  child: const Text(textAlign: TextAlign.center, 'Small'),
+                  child: Text(textAlign: TextAlign.center, 'Small: $_small'),
                 ),
               ),
               const SizedBox(
@@ -119,7 +132,7 @@ class StcPageState extends State<StcPage> {
                           _saveEvent(EventType.majorMistake);
                         }
                       : null,
-                  child: const Text(textAlign: TextAlign.center, 'Major'),
+                  child: Text(textAlign: TextAlign.center, 'Major: $_major'),
                 ),
               ),
               const SizedBox(
@@ -135,7 +148,7 @@ class StcPageState extends State<StcPage> {
                           _saveEvent(EventType.obviousMistake);
                         }
                       : null,
-                  child: const Text(textAlign: TextAlign.center, 'Obvious'),
+                  child: Text(textAlign: TextAlign.center, 'Obvious: $_obvious'),
                 ),
               ),
             ],
