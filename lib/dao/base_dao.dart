@@ -1,5 +1,5 @@
 import 'package:artistic_swimming_app/dao/event_dao.dart';
-import 'package:artistic_swimming_app/dao/user_dao.dart';
+import 'package:artistic_swimming_app/dao/session_dao.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -14,7 +14,7 @@ abstract class BaseDao {
       onCreate: (db, version) async {
         final batch = db.batch();
         batch.execute(EventDao.getCreateTableScript());
-        batch.execute(UserDao.getCreateTableScript());
+        batch.execute(SessionDao.getCreateTableScript());
         await batch.commit();
       },
       version: 1,

@@ -1,10 +1,11 @@
 import 'package:artistic_swimming_app/dao/event_dao.dart';
-import 'package:artistic_swimming_app/dao/user_dao.dart';
-import 'package:artistic_swimming_app/login.dart';
+import 'package:artistic_swimming_app/dao/session_dao.dart';
 import 'package:artistic_swimming_app/repository/export_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+import 'home.dart';
 
 void main() {
   runApp(
@@ -18,14 +19,15 @@ class ArtisticSwimmingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final eventDao = EventDao();
-    final userDao = UserDao();
-    final exportRepository = ExportRepository(eventDao: eventDao, userDao: userDao);
+    final sessionDao = SessionDao();
+
+    final exportRepository = ExportRepository(eventDao: eventDao);
 
     _landscapeModeOnly();
     return MultiProvider(
       providers: [
         Provider(create: (context) => eventDao),
-        Provider(create: (context) => userDao),
+        Provider(create: (context) => sessionDao),
         Provider(create: (context) => exportRepository),
       ],
       child: MaterialApp(
@@ -33,7 +35,7 @@ class ArtisticSwimmingApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const LoginPage(),
+        home: const SynchroHomePage(),
       ),
     );
   }

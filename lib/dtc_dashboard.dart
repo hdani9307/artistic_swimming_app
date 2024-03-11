@@ -8,6 +8,8 @@ import 'model/dtc_result_summary.dart';
 class DtcDashboardPage extends StatefulWidget {
   const DtcDashboardPage({super.key});
 
+  String get title => "DTC Dashboard";
+
   @override
   State<DtcDashboardPage> createState() => DtcDashboardPageState();
 }
@@ -28,24 +30,24 @@ class DtcDashboardPageState extends State<DtcDashboardPage> {
     });
   }
 
-  Future<void> _showMyDialog() async {
+  Future<void> _showDelete() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmation needed'),
-          content: SingleChildScrollView(
+          title: const Text('Megerősítés szükséges'),
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
-                Text('This action will delete all of your data'),
-                Text('Are you sure?'),
+              children: <Widget>[
+                Text('Minden adatot törölni fogsz ezzel'),
+                Text('Biztos vagy benne?'),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Confirm'),
+              child: const Text('Megerősítés'),
               onPressed: () {
                 Provider.of<EventDao>(context, listen: false).deleteAll();
                 Navigator.of(context).pop();
@@ -64,13 +66,13 @@ class DtcDashboardPageState extends State<DtcDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Difficulty Technical Controller Dashboard'),
+        title: Text(widget.title),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),
-            tooltip: 'Delete',
+            tooltip: 'Törlés',
             onPressed: () {
-             _showMyDialog();
+              _showDelete();
             },
           ),
         ],
@@ -80,38 +82,21 @@ class DtcDashboardPageState extends State<DtcDashboardPage> {
         itemBuilder: (context, index) {
           return Card(
             child: Column(
-              children: _generateHybridViews(index),
+              children: [
+                ListTile(
+                  title: Text("${_summary[index].sessionName} - Kűr #${index + 1}", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                ),
+                Text("Víz alatti idő: ${(_summary[index].timeUnderWater / 1000000).toStringAsPrecision(2)} s"),
+                const Divider(),
+                Text("Víz feletti idő: ${(_summary[index].timeAboveWater / 1000000).toStringAsPrecision(2)} s"),
+                const Divider(),
+                Text("Víz alatti megosztás: ${_summary[index].underWaterRatio.toStringAsPrecision(2)} %"),
+                const Divider(),
+              ],
             ),
           );
         },
       ),
     );
-  }
-
-  List<Widget> _generateHybridViews(int index) {
-    var widgets = <Widget>[];
-    widgets.add(
-      ListTile(
-        title: Text('Routine #${index + 1}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-      ),
-    );
-    for (var i = 0; i < _summary[index].hybrids.length; i++) {
-      widgets.add(
-        Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Hybrid: #${i + 1}"),
-              Text("Number of movements: ${_summary[index].hybrids[i].numberOfMoves}"),
-              Text("Time under water: ${(_summary[index].hybrids[i].timeUnderWater / 1000).toStringAsPrecision(2)} s"),
-              const Divider()
-            ],
-          ),
-        ),
-      );
-    }
-
-    return widgets;
   }
 }

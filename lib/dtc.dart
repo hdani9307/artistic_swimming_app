@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:artistic_swimming_app/dao/session_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +11,7 @@ import 'model/event.dart';
 class DtcPage extends StatefulWidget {
   const DtcPage({super.key});
 
-  String get title => "Difficulty Technical Controller";
+  String get title => "DTC";
 
   @override
   State<DtcPage> createState() => DtcPageState();
@@ -20,10 +21,9 @@ class DtcPageState extends State<DtcPage> {
   final Stopwatch _stopwatch = Stopwatch();
 
   bool _started = false;
-  int _movements = 0;
   bool _underWater = false;
   String _timerText = "00:00";
-  int _routineCounter = 0;
+  String _sessionName = "";
 
   Timer? _timer;
 
@@ -31,7 +31,7 @@ class DtcPageState extends State<DtcPage> {
   void initState() {
     super.initState();
     _timer = Timer.periodic(const Duration(milliseconds: 1000), _timerCallback);
-    _getRoutines();
+    _getSessionName();
   }
 
   @override
@@ -41,10 +41,10 @@ class DtcPageState extends State<DtcPage> {
     super.dispose();
   }
 
-  Future<void> _getRoutines() async {
-    var routines = await Provider.of<EventDao>(context, listen: false).countRounds();
+  Future<void> _getSessionName() async {
+    var session = await Provider.of<SessionDao>(context, listen: false).select();
     setState(() {
-      _routineCounter = routines;
+      _sessionName = session.name;
     });
   }
 
@@ -64,34 +64,19 @@ class DtcPageState extends State<DtcPage> {
         _saveEvent(EventType.underWater);
       } else {
         _saveEvent(EventType.aboveWater);
-        _resetMovement();
       }
     });
   }
 
-  _increaseMovement() {
-    setState(() {
-      _movements++;
-    });
-  }
-
-  _resetMovement() {
-    setState(() {
-      _movements = 0;
-    });
-  }
-
   _toggleStarted() {
-    _saveEvent(_started ? EventType.start : EventType.stop);
+    _saveEvent(_started ? EventType.stop : EventType.start);
     setState(() {
       _started = !_started;
       if (_started) {
         _stopwatch.reset();
         _stopwatch.start();
-        _routineCounter++;
       } else {
         _stopwatch.stop();
-        _resetMovement();
         _setUnderWater(false);
       }
     });
@@ -99,20 +84,15 @@ class DtcPageState extends State<DtcPage> {
 
   _saveEvent(EventType eventType) {
     Provider.of<EventDao>(context, listen: false).insert(
-      EventEntity(
-        type: eventType,
-        timestamp: DateTime.now().millisecondsSinceEpoch,
-        controllerType: ControllerType.dtc
-      ),
+      EventEntity(type: eventType, timestamp: DateTime.now().microsecondsSinceEpoch, sessionName: _sessionName),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    const font = TextStyle(fontSize: 20);
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.title} - Routine: $_routineCounter"),
+        title: Text("${widget.title} - $_sessionName"),
         actions: [
           IconButton(
             icon: _started ? const Icon(Icons.stop) : const Icon(Icons.play_arrow),
@@ -154,34 +134,18 @@ class DtcPageState extends State<DtcPage> {
                 width: 20,
               ),
               Flexible(
-                  flex: 1,
-                  fit: FlexFit.tight,
-                  child: Center(
-                    child: SwitchListTile(
-                      title: const Text(textAlign: TextAlign.center, 'Under water'),
-                      value: _underWater,
-                      onChanged: _started
-                          ? (bool value) {
-                              _setUnderWater(value);
-                            }
-                          : null,
-                    ),
-                  )),
-              const SizedBox(
-                width: 20,
-              ),
-              Flexible(
-                flex: 2,
+                flex: 1,
                 fit: FlexFit.tight,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(textStyle: font, backgroundColor: Colors.green),
-                  onPressed: _underWater
-                      ? () {
-                          _increaseMovement();
-                          _saveEvent(EventType.leg);
-                        }
-                      : null,
-                  child: Text(textAlign: TextAlign.center, 'Number of movements: $_movements'),
+                child: Center(
+                  child: SwitchListTile(
+                    title: const Text(textAlign: TextAlign.center, 'Víz alatt'),
+                    value: _underWater,
+                    onChanged: _started
+                        ? (bool value) {
+                            _setUnderWater(value);
+                          }
+                        : null,
+                  ),
                 ),
               ),
             ],

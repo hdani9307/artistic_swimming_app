@@ -1,10 +1,6 @@
-import 'package:artistic_swimming_app/export.dart';
 import 'package:artistic_swimming_app/model/event.dart';
-import 'package:artistic_swimming_app/repository/export_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'dao/event_dao.dart';
 
 class StcPage extends StatefulWidget {
   const StcPage({super.key});
@@ -17,7 +13,6 @@ class StcPage extends StatefulWidget {
 
 class StcPageState extends State<StcPage> {
   bool _started = false;
-  int _routineCounter = 0;
   int _small = 0;
   int _major = 0;
   int _obvious = 0;
@@ -30,7 +25,6 @@ class StcPageState extends State<StcPage> {
         _small = 0;
         _major = 0;
         _obvious = 0;
-        _routineCounter++;
       }
     });
   }
@@ -49,22 +43,6 @@ class StcPageState extends State<StcPage> {
         _small++;
       });
     }
-    Provider.of<EventDao>(context, listen: false).insert(
-      EventEntity(type: eventType, timestamp: DateTime.now().millisecondsSinceEpoch, controllerType: ControllerType.stc),
-    );
-  }
-
-  Future<void> _getRoutines() async {
-    var routines = await Provider.of<EventDao>(context, listen: false).countRounds();
-    setState(() {
-      _routineCounter = routines;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getRoutines();
   }
 
   @override
@@ -72,30 +50,13 @@ class StcPageState extends State<StcPage> {
     const font = TextStyle(fontSize: 20);
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.title} - Routine: $_routineCounter"),
+        title: Text(widget.title),
         actions: [
           IconButton(
             icon: _started ? const Icon(Icons.stop) : const Icon(Icons.play_arrow),
             tooltip: _started ? 'Stop' : 'Start',
             onPressed: () {
               _toggleStarted();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.qr_code),
-            tooltip: 'Export',
-            onPressed: () async {
-              Provider.of<ExportRepository>(context, listen: false).exportEvents((meta, data) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ExportPage(
-                      meta: meta,
-                      data: data,
-                    ),
-                  ),
-                );
-              });
             },
           ),
         ],

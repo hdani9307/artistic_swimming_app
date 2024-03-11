@@ -1,8 +1,9 @@
 class DTCResultSummary {
-  final List<Hybrid> hybrids = [];
-}
 
-class Hybrid {
-  var timeUnderWater = 0;
-  var numberOfMoves = 0;
+  late final int timeUnderWater;
+  late final int timeAboveWater;
+  late final double underWaterRatio;
+  late final int sessionLength;
+  late final String sessionName;
+
 }

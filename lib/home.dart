@@ -1,8 +1,6 @@
-import 'package:artistic_swimming_app/scan.dart';
+import 'package:artistic_swimming_app/session_start.dart';
 import 'package:artistic_swimming_app/stc.dart';
 import 'package:flutter/material.dart';
-
-import 'dtc.dart';
 
 class SynchroHomePage extends StatefulWidget {
   const SynchroHomePage({super.key});
@@ -54,29 +52,12 @@ class _SynchroHomePageState extends State<SynchroHomePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const DtcPage()),
+                      MaterialPageRoute(builder: (context) => const SessionStartPage()),
                     );
                   },
                   child: const Text(textAlign: TextAlign.center, 'Difficulty Technical Controller'),
                 ),
               ),
-              const SizedBox(
-                width: 20,
-              ),
-              Flexible(
-                flex: 1,
-                fit: FlexFit.tight,
-                child: ElevatedButton(
-                  style: style,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ScanPage()),
-                    );
-                  },
-                  child: const Text(textAlign: TextAlign.center, 'Dashboard'),
-                ),
-              ), //Flex
             ],
           ),
         ),

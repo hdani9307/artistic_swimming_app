@@ -1,19 +1,17 @@
-
-import "package:artistic_swimming_app/dao/user_dao.dart";
+import "package:artistic_swimming_app/dao/session_dao.dart";
+import "package:artistic_swimming_app/dtc.dart";
 import "package:artistic_swimming_app/model/user.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
-import "home.dart";
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SessionStartPage extends StatefulWidget {
+  const SessionStartPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => LoginPageState();
+  State<StatefulWidget> createState() => SessionStartPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class SessionStartPageState extends State<SessionStartPage> {
   final _controller = TextEditingController();
 
   bool? _valid;
@@ -23,7 +21,7 @@ class LoginPageState extends State<LoginPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text("Welcome"),
+        title: const Text("Session indítása"),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -36,9 +34,9 @@ class LoginPageState extends State<LoginPage> {
                 controller: _controller,
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
-                  labelText: "Your name",
-                  hintText: "Please enter your name",
-                  errorText: _valid == null || _valid! ? null : "Value can't be empty",
+                  labelText: "Session neve",
+                  hintText: "Kérlek add meg a session nevét",
+                  errorText: _valid == null || _valid! ? null : "A session neve nem lehet üres",
                 ),
               ),
             ),
@@ -56,20 +54,20 @@ class LoginPageState extends State<LoginPage> {
                       _valid = false;
                     });
                   } else {
-                    Provider.of<UserDao>(context, listen: false).insertOne(
-                      UserEntity(
+                    Provider.of<SessionDao>(context, listen: false).insertOne(
+                      SessionEntity(
                         name: _controller.text,
                       ),
                     );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const SynchroHomePage(),
+                        builder: (_) => const DtcPage(),
                       ),
                     );
                   }
                 },
-                child: const Text("Login"),
+                child: const Text("Kész"),
               ),
             )
           ],
