@@ -136,16 +136,14 @@ class DtcPageState extends State<DtcPage> {
               Flexible(
                 flex: 1,
                 fit: FlexFit.tight,
-                child: Center(
-                  child: SwitchListTile(
-                    title: const Text(textAlign: TextAlign.center, 'Víz alatt'),
-                    value: _underWater,
-                    onChanged: _started
-                        ? (bool value) {
-                            _setUnderWater(value);
-                          }
-                        : null,
-                  ),
+                child: SwitchListTile(
+                  title: const Text(textAlign: TextAlign.center, 'Víz alatt'),
+                  value: _underWater,
+                  onChanged: _started
+                      ? (bool value) {
+                          _setUnderWater(value);
+                        }
+                      : null,
                 ),
               ),
             ],

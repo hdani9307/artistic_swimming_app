@@ -33,6 +33,7 @@ class ArtisticSwimmingApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Synchro Timer',
         theme: ThemeData(
+          useMaterial3: false,
           primarySwatch: Colors.blue,
         ),
         home: const SynchroHomePage(),

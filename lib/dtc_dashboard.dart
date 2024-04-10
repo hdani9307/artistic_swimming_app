@@ -30,6 +30,10 @@ class DtcDashboardPageState extends State<DtcDashboardPage> {
     });
   }
 
+  Future<void> _exportData() async {
+    await Provider.of<ExportRepository>(context, listen: false).exportDTCResultSummary();
+  }
+
   Future<void> _showDelete() async {
     return showDialog<void>(
       context: context,
@@ -64,6 +68,9 @@ class DtcDashboardPageState extends State<DtcDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    const snackBar = SnackBar(
+      content: Text('Sikeres exportálás!'),
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -73,6 +80,14 @@ class DtcDashboardPageState extends State<DtcDashboardPage> {
             tooltip: 'Törlés',
             onPressed: () {
               _showDelete();
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.download),
+            tooltip: 'Export',
+            onPressed: () {
+              _exportData();
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             },
           ),
         ],

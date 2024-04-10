@@ -1,14 +1,22 @@
-import 'dart:math';
+import 'dart:io';
 
 import 'package:artistic_swimming_app/dao/event_dao.dart';
-import 'package:artistic_swimming_app/dao/session_dao.dart';
 import 'package:artistic_swimming_app/model/event.dart';
+import 'package:csv/csv.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../model/dtc_result_summary.dart';
-import '../model/export.dart';
 
 class ExportRepository {
   final EventDao eventDao;
+
+  final List<dynamic> csvHeader = [
+    "timeUnderWater",
+    "timeAboveWater",
+    "underWaterRatio",
+    "sessionLength",
+    "sessionName",
+  ];
 
   ExportRepository({
     required this.eventDao,
@@ -57,5 +65,25 @@ class ExportRepository {
     }
 
     return summaryList;
+  }
+
+  Future<File> exportDTCResultSummary() async {
+    var summary = await getDTCResultSummary();
+    var exportData = summary.map((e) => e.toDynamic()).toList();
+
+    var csv = const ListToCsvConverter().convert([csvHeader] + exportData);
+    final file = await _localFile;
+    return file.writeAsString(csv);
+  }
+
+  Future<String> get _localPath async {
+    final directory = await getDownloadsDirectory();
+
+    return directory!.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/dtc_export.txt');
   }
 }
